@@ -4,16 +4,18 @@ import React, { useState, useEffect } from 'react';
 const imageModules = import.meta.glob('../assets/images/*.jpg', { eager: true, import: 'default' });
 const images = Object.values(imageModules);
 
-function Gallery({ onComplete }) {
+function Gallery({ onComplete, viewMode }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFadingOut, setIsFadingOut] = useState(false);
     const total = images.length;
 
     useEffect(() => {
         if (total === 0) {
-            if (onComplete) onComplete();
+            if (onComplete && viewMode !== 'website') onComplete();
             return;
         }
+
+        if (viewMode === 'website') return;
 
         const timer = setTimeout(() => {
             if (currentIndex < total - 1) {
@@ -98,8 +100,8 @@ function Gallery({ onComplete }) {
     };
 
     return (
-        <section className={`gallery-section fade-in ${isFadingOut ? 'fade-out' : ''}`}>
-            <div className="reveal-on-scroll is-visible" style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
+        <section className={`gallery-section ${viewMode !== 'website' ? 'fade-in' : ''} ${viewMode !== 'website' && isFadingOut ? 'fade-out' : ''}`}>
+            <div className={`${viewMode !== 'website' ? 'reveal-on-scroll is-visible' : 'reveal-on-scroll'}`} style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
                 <h2 className="section-title">Our Beautiful Memories</h2>
                 <p className="section-subtitle">Every moment with you is a treasure.</p>
 

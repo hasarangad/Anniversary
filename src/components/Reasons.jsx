@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-function Reasons({ onComplete }) {
+function Reasons({ onComplete, viewMode }) {
     const [visibleBoxes, setVisibleBoxes] = useState(0);
     const [isFadingOut, setIsFadingOut] = useState(false);
 
     useEffect(() => {
+        if (viewMode === 'website') return;
         const interval = setInterval(() => {
             setVisibleBoxes(prev => {
                 if (prev >= 3) {
@@ -30,17 +31,17 @@ function Reasons({ onComplete }) {
     ];
 
     return (
-        <section className={`reasons-section fade-in ${isFadingOut ? 'fade-out' : ''}`}>
-            <div className="is-visible" style={{width: '100%'}}>
+        <section className={`reasons-section ${viewMode !== 'website' ? 'fade-in' : ''} ${viewMode !== 'website' && isFadingOut ? 'fade-out' : ''}`}>
+            <div className={`${viewMode !== 'website' ? 'is-visible' : 'reveal-on-scroll'}`} style={{width: '100%'}}>
                 <h2 className="section-title">A Prescription for Love</h2>
                 <p className="section-subtitle">Dosage: Infinite, Frequency: Every single day</p>
                 
                 <div className="card-container">
                     {reasons.map((r, i) => (
-                        visibleBoxes === i && (
+                        (viewMode === 'website' || visibleBoxes === i) && (
                             <div 
                                 key={i} 
-                                className="reason-card fade-in" 
+                                className={`reason-card ${viewMode === 'website' ? 'reveal-on-scroll' : 'fade-in'}`} 
                             >
                                 <div className="card-icon"><i className={r.icon}></i></div>
                                 <h3>{r.title}</h3>

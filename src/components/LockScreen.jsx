@@ -4,6 +4,8 @@ function LockScreen({ onUnlock }) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
     const [showAudioPrompt, setShowAudioPrompt] = useState(false);
+    const [showViewPrompt, setShowViewPrompt] = useState(false);
+    const [audioChoice, setAudioChoice] = useState(false);
     const [nextState, setNextState] = useState('');
 
     const handleSubmit = (e) => {
@@ -29,6 +31,12 @@ function LockScreen({ onUnlock }) {
         }
     };
 
+    const handleAudioChoice = (choice) => {
+        setAudioChoice(choice);
+        setShowAudioPrompt(false);
+        setShowViewPrompt(true);
+    };
+
     if (showAudioPrompt) {
         return (
             <div className="lock-screen">
@@ -39,8 +47,32 @@ function LockScreen({ onUnlock }) {
                         If you want to hear it, please increase your volume and tap 'Yes'. If not, tap 'No'.
                     </p>
                     <div style={{ display: 'flex', gap: '1rem', width: '100%', justifyContent: 'center' }}>
-                        <button className="lock-btn" onClick={() => onUnlock(nextState, true)}>Yes</button>
-                        <button className="lock-btn" style={{ background: 'var(--glass-border)' }} onClick={() => onUnlock(nextState, false)}>No</button>
+                        <button className="lock-btn" onClick={() => handleAudioChoice(true)}>Yes</button>
+                        <button className="lock-btn" style={{ background: 'var(--glass-border)' }} onClick={() => handleAudioChoice(false)}>No</button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (showViewPrompt) {
+        return (
+            <div className="lock-screen">
+                <div className="lock-panel glass-panel" style={{ maxWidth: '600px' }}>
+                    <i className="fas fa-eye lock-icon"></i>
+                    <h2 className="cursive-title" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Choose Your Experience</h2>
+                    <p className="subtitle" style={{ marginBottom: '2rem', color: 'var(--text-main)' }}>
+                        How would you like to view your anniversary surprise?
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
+                        <button className="lock-btn" onClick={() => onUnlock(nextState, audioChoice, 'presentation')}>
+                            <strong>Presentation View</strong><br/>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 'normal' }}>An automated, cinematic slideshow that plays like a movie.</span>
+                        </button>
+                        <button className="lock-btn" style={{ background: 'var(--glass-border)' }} onClick={() => onUnlock(nextState, audioChoice, 'website')}>
+                            <strong>Website View</strong><br/>
+                            <span style={{ fontSize: '0.9rem', fontWeight: 'normal' }}>A traditional, scrollable webpage to explore at your own pace.</span>
+                        </button>
                     </div>
                 </div>
             </div>

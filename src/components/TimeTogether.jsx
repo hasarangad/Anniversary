@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
-function TimeTogether({ onComplete }) {
+function TimeTogether({ onComplete, viewMode }) {
     const startDate = new Date('July 2, 2025 00:00:00').getTime();
     const [timeTogether, setTimeTogether] = useState({
         days: '00', hours: '00', minutes: '00', seconds: '00'
@@ -32,30 +32,54 @@ function TimeTogether({ onComplete }) {
     }, [startDate]);
 
     useEffect(() => {
-        // Fire Confetti!
-        var duration = 3 * 1000;
-        var end = Date.now() + duration;
+        let confettiFired = false;
+        const fireConfetti = () => {
+            if (confettiFired) return;
+            confettiFired = true;
+            var duration = 3 * 1000;
+            var end = Date.now() + duration;
 
-        (function frame() {
-            confetti({
-                particleCount: 5,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
-            });
-            confetti({
-                particleCount: 5,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
-            });
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
+                });
 
-            if (Date.now() < end) {
-                requestAnimationFrame(frame);
-            }
-        }());
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        };
+
+        if (viewMode === 'website') {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    fireConfetti();
+                    observer.disconnect();
+                }
+            }, { threshold: 0.5 });
+            
+            const el = document.getElementById('countdown-section');
+            if (el) observer.observe(el);
+            
+            return () => observer.disconnect();
+        } else {
+            fireConfetti();
+        }
+    }, [viewMode]);
+
+    useEffect(() => {
+        if (viewMode === 'website') return;
 
         const timerOut = setTimeout(() => {
             setIsFadingOut(true);
@@ -76,9 +100,9 @@ function TimeTogether({ onComplete }) {
     return (
         <section
             id="countdown-section"
-            className={`countdown-section zoom-in-slow fade-in ${isFadingOut ? 'fade-out' : ''}`}
+            className={`countdown-section ${viewMode !== 'website' ? 'fade-in zoom-in-slow' : ''} ${isFadingOut ? 'fade-out' : ''}`}
         >
-            <div className="content-wrapper is-visible">
+            <div className={`content-wrapper ${viewMode !== 'website' ? 'is-visible' : 'reveal-on-scroll'}`}>
                 <h2 className="section-title">Happy 1 Year Anniversary, Boo! ❤️</h2>
                 <p className="anniversary-date">Time We've Been In Love</p>
 

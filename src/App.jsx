@@ -14,6 +14,7 @@ function App() {
   const [appState, setAppState] = useState('locked'); // 'locked', 'main', 'countdown'
   const [currentSlide, setCurrentSlide] = useState(0);
   const [playAudio, setPlayAudio] = useState(false);
+  const [viewMode, setViewMode] = useState('presentation'); // 'presentation' or 'website'
   const audioRef = React.useRef(null);
 
   useEffect(() => {
@@ -42,9 +43,34 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleUnlock = (state, shouldPlayAudio) => {
+  useEffect(() => {
+    if (viewMode === 'website') {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+          }
+        });
+      }, { threshold: 0.15 });
+
+      // Use a small timeout to ensure DOM is fully rendered
+      const timeoutId = setTimeout(() => {
+        document.querySelectorAll('.reveal-on-scroll').forEach(el => {
+          observer.observe(el);
+        });
+      }, 100);
+
+      return () => {
+        clearTimeout(timeoutId);
+        observer.disconnect();
+      };
+    }
+  }, [viewMode]);
+
+  const handleUnlock = (state, shouldPlayAudio, mode) => {
     setAppState(state);
     setPlayAudio(shouldPlayAudio);
+    setViewMode(mode || 'presentation');
     setCurrentSlide(0);
   };
 
@@ -58,6 +84,21 @@ function App() {
 
   if (appState === 'countdown') {
     return <WaitingPage />;
+  }
+
+  if (viewMode === 'website') {
+    return (
+      <div className="website-container">
+        <audio ref={audioRef} src={backgroundMusic} loop />
+        <CursorTrail />
+        <FloatingHearts />
+        <Hero viewMode="website" />
+        <TimeTogether viewMode="website" />
+        <Gallery viewMode="website" />
+        <Reasons viewMode="website" />
+        <LoveLetter viewMode="website" />
+      </div>
+    );
   }
 
   return (

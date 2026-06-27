@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-function Hero({ onComplete }) {
-    const [phase, setPhase] = useState(0); // 0: hey boo, 1: to my beautiful boo, 2: fading out
+function Hero({ onComplete, viewMode }) {
+    const [phase, setPhase] = useState(viewMode === 'website' ? 1 : 0); // 0: hey boo, 1: to my beautiful boo, 2: fading out
     const [isFadingOut, setIsFadingOut] = useState(false);
 
     useEffect(() => {
+        if (viewMode === 'website') return;
         const timer1 = setTimeout(() => {
             setPhase(1);
         }, 5000);
@@ -26,8 +27,8 @@ function Hero({ onComplete }) {
     }, [onComplete]);
 
     return (
-        <section className={`hero fade-in ${isFadingOut ? 'fade-out' : ''}`}>
-            <div className="glass-panel is-visible">
+        <section className={`hero ${viewMode !== 'website' ? 'fade-in' : ''} ${isFadingOut ? 'fade-out' : ''}`}>
+            <div className={`glass-panel ${viewMode !== 'website' ? 'is-visible' : 'reveal-on-scroll'}`}>
                 {phase === 0 ? (
                     <h1 className="cursive-title fade-in" key="phase0">Hey Boo, the waiting is over!</h1>
                 ) : (
