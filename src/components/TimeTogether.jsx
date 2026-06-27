@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 
-function TimeTogether() {
-    // Their relationship started 1 year before July 2, 2026 -> July 2, 2025
+function TimeTogether({ onComplete }) {
     const startDate = new Date('July 2, 2025 00:00:00').getTime();
     const [timeTogether, setTimeTogether] = useState({
         days: '00', hours: '00', minutes: '00', seconds: '00'
     });
-
-    const sectionRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
+    const [isFadingOut, setIsFadingOut] = useState(false);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -35,58 +32,53 @@ function TimeTogether() {
     }, [startDate]);
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setIsVisible(true);
+        // Fire Confetti!
+        var duration = 3 * 1000;
+        var end = Date.now() + duration;
 
-                    // Fire Confetti!
-                    var duration = 3 * 1000;
-                    var end = Date.now() + duration;
+        (function frame() {
+            confetti({
+                particleCount: 5,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
+            });
+            confetti({
+                particleCount: 5,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
+            });
 
-                    (function frame() {
-                        confetti({
-                            particleCount: 5,
-                            angle: 60,
-                            spread: 55,
-                            origin: { x: 0 },
-                            colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
-                        });
-                        confetti({
-                            particleCount: 5,
-                            angle: 120,
-                            spread: 55,
-                            origin: { x: 1 },
-                            colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
-                        });
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
 
-                        if (Date.now() < end) {
-                            requestAnimationFrame(frame);
-                        }
-                    }());
+        const timerOut = setTimeout(() => {
+            setIsFadingOut(true);
+        }, 9000);
 
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.3 }
-        );
+        const timerComplete = setTimeout(() => {
+            if (onComplete) onComplete();
+        }, 10000);
 
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current);
-        }
-
-        return () => observer.disconnect();
-    }, []);
+        return () => {
+            clearTimeout(timerOut);
+            clearTimeout(timerComplete);
+        };
+    }, [onComplete]);
 
     const formatTime = (time) => time < 10 ? `0${time}` : time;
 
     return (
         <section
             id="countdown-section"
-            className="countdown-section"
-            ref={sectionRef}
+            className={`countdown-section zoom-in-slow fade-in ${isFadingOut ? 'fade-out' : ''}`}
         >
-            <div className={`content-wrapper reveal-on-scroll ${isVisible ? 'is-visible' : ''}`}>
+            <div className="content-wrapper is-visible">
                 <h2 className="section-title">Happy 1 Year Anniversary, Boo! ❤️</h2>
                 <p className="anniversary-date">Time We've Been In Love</p>
 

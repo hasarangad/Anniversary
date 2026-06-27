@@ -1,41 +1,33 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Use Vite's glob import to automatically load all jpg images from the folder
 const imageModules = import.meta.glob('../assets/images/*.jpg', { eager: true, import: 'default' });
 const images = Object.values(imageModules);
 
-function Gallery() {
+function Gallery({ onComplete }) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const sectionRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(false);
+    const [isFadingOut, setIsFadingOut] = useState(false);
     const total = images.length;
 
     useEffect(() => {
-        // Auto-navigate every 3.5 seconds
-        const interval = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % total);
-        }, 3500);
-
-        return () => clearInterval(interval);
-    }, [total]);
-
-    // Scroll reveal logic
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting) {
-                    setIsVisible(true);
-                    observer.disconnect();
-                }
-            },
-            { threshold: 0.2 }
-        );
-
-        if (sectionRef.current) {
-            observer.observe(sectionRef.current);
+        if (total === 0) {
+            if (onComplete) onComplete();
+            return;
         }
-        return () => observer.disconnect();
-    }, []);
+
+        const timer = setTimeout(() => {
+            if (currentIndex < total - 1) {
+                setCurrentIndex(currentIndex + 1);
+            } else {
+                setIsFadingOut(true);
+                setTimeout(() => {
+                    if (onComplete) onComplete();
+                }, 1000);
+            }
+        }, 3000);
+
+        return () => clearTimeout(timer);
+    }, [currentIndex, total, onComplete]);
 
     if (total === 0) {
         return null; // Don't render if no images
@@ -106,8 +98,8 @@ function Gallery() {
     };
 
     return (
-        <section className="gallery-section" ref={sectionRef}>
-            <div className={`reveal-on-scroll ${isVisible ? 'is-visible' : ''}`} style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
+        <section className={`gallery-section fade-in ${isFadingOut ? 'fade-out' : ''}`}>
+            <div className="reveal-on-scroll is-visible" style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
                 <h2 className="section-title">Our Beautiful Memories</h2>
                 <p className="section-subtitle">Every moment with you is a treasure.</p>
 

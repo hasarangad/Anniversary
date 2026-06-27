@@ -8,60 +8,22 @@ import FloatingHearts from './components/FloatingHearts'
 import CursorTrail from './components/CursorTrail'
 import LockScreen from './components/LockScreen'
 import WaitingPage from './components/WaitingPage'
+import backgroundMusic from './assets/audio/Ed Sheeran - Perfect (Official Music Video).mp3'
 
 function App() {
   const [appState, setAppState] = useState('locked'); // 'locked', 'main', 'countdown'
-  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [playAudio, setPlayAudio] = useState(false);
+  const audioRef = React.useRef(null);
 
-  // When appState changes to 'main', start auto scrolling
   useEffect(() => {
-    if (appState === 'main') {
-      setIsAutoScrolling(true);
+    if (playAudio && audioRef.current) {
+      audioRef.current.currentTime = 20; // Skip first 20 seconds
+      audioRef.current.play().catch(e => console.error("Audio play failed:", e));
+    } else if (!playAudio && audioRef.current) {
+      audioRef.current.pause();
     }
-  }, [appState]);
-
-  // Auto-scroll logic
-  useEffect(() => {
-    let animationFrameId;
-
-    const scrollStep = () => {
-      if (isAutoScrolling) {
-        window.scrollBy(0, 1); // Scroll down 1 pixel per frame
-        animationFrameId = requestAnimationFrame(scrollStep);
-      }
-    };
-
-    if (isAutoScrolling) {
-      animationFrameId = requestAnimationFrame(scrollStep);
-    }
-
-    return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
-    };
-  }, [isAutoScrolling]);
-
-  // Stop auto-scroll on user interaction
-  useEffect(() => {
-    const stopScrolling = () => {
-      if (isAutoScrolling) {
-        setIsAutoScrolling(false);
-      }
-    };
-
-    if (appState === 'main') {
-      window.addEventListener('wheel', stopScrolling);
-      window.addEventListener('touchstart', stopScrolling);
-      window.addEventListener('mousedown', stopScrolling);
-      window.addEventListener('keydown', stopScrolling);
-
-      return () => {
-        window.removeEventListener('wheel', stopScrolling);
-        window.removeEventListener('touchstart', stopScrolling);
-        window.removeEventListener('mousedown', stopScrolling);
-        window.removeEventListener('keydown', stopScrolling);
-      };
-    }
-  }, [appState, isAutoScrolling]);
+  }, [playAudio]);
 
   useEffect(() => {
     const checkTime = () => {
@@ -80,8 +42,18 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const handleUnlock = (state, shouldPlayAudio) => {
+    setAppState(state);
+    setPlayAudio(shouldPlayAudio);
+    setCurrentSlide(0);
+  };
+
+  const nextSlide = () => {
+    setCurrentSlide(prev => Math.min(prev + 1, 4));
+  };
+
   if (appState === 'locked') {
-    return <LockScreen onUnlock={(state) => setAppState(state)} />;
+    return <LockScreen onUnlock={handleUnlock} />;
   }
 
   if (appState === 'countdown') {
@@ -89,15 +61,16 @@ function App() {
   }
 
   return (
-    <>
+    <div className="slideshow-container">
+      <audio ref={audioRef} src={backgroundMusic} loop />
       <CursorTrail />
       <FloatingHearts />
-      <Hero />
-      <TimeTogether />
-      <Gallery />
-      <Reasons />
-      <LoveLetter />
-    </>
+      {currentSlide === 0 && <Hero onComplete={nextSlide} />}
+      {currentSlide === 1 && <TimeTogether onComplete={nextSlide} />}
+      {currentSlide === 2 && <Gallery onComplete={nextSlide} />}
+      {currentSlide === 3 && <Reasons onComplete={nextSlide} />}
+      {currentSlide === 4 && <LoveLetter />}
+    </div>
   )
 }
 
