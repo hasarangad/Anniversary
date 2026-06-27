@@ -29,8 +29,8 @@ function FloatingHearts() {
     return (
         <div className="heart-container">
             {hearts.map(heart => (
-                <div 
-                    key={heart.id} 
+                <div
+                    key={heart.id}
                     className="floating-heart"
                     style={{
                         left: `${heart.left}vw`,

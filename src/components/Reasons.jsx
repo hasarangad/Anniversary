@@ -30,24 +30,24 @@ function Reasons() {
                 
                 <div className="card-container">
                     <div className="reason-card" style={{ transitionDelay: '0.1s' }}>
-                        <div className="card-icon"><i className="fas fa-stethoscope"></i></div>
-                        <h3>Your Passion</h3>
-                        <p>I love watching you study and work so hard. You're going to be the most amazing doctor, Boo. Your dedication inspires me every day.</p>
+                        <div className="card-icon"><i className="fas fa-star"></i></div>
+                        <h3>Your Beautiful Soul</h3>
+                        <p>I love how kind and gentle you are with everyone. You have a heart of gold that shines so brightly, making my world a better place every single day.</p>
                     </div>
                     <div className="reason-card" style={{ transitionDelay: '0.3s' }}>
                         <div className="card-icon"><i className="fas fa-smile-beam"></i></div>
-                        <h3>Your Smile</h3>
-                        <p>It's literally my favorite sight in the world. No matter how tough a day I've had, seeing you smile completely cures it.</p>
+                        <h3>Your Sweet Smile</h3>
+                        <p>It's literally my favorite sight in the world. No matter how tough a day I've had, seeing your adorable smile completely melts my heart.</p>
                     </div>
                     <div className="reason-card" style={{ transitionDelay: '0.5s' }}>
-                        <div className="card-icon"><i className="fas fa-brain"></i></div>
-                        <h3>Your Brilliant Mind</h3>
-                        <p>Not only are you beautiful, but you are so incredibly smart. I love our conversations and how you see the world.</p>
+                        <div className="card-icon"><i className="fas fa-cat"></i></div>
+                        <h3>Your Cute Energy</h3>
+                        <p>I absolutely adore your playful and silly side. The way you laugh, the cute little things you do... everything about you is just perfect to me.</p>
                     </div>
                     <div className="reason-card" style={{ transitionDelay: '0.7s' }}>
-                        <div className="card-icon"><i className="fas fa-heartbeat"></i></div>
+                        <div className="card-icon"><i className="fas fa-heart"></i></div>
                         <h3>My Safe Place</h3>
-                        <p>You make my heart skip a beat, but you also bring me so much peace. Being with you just feels like home.</p>
+                        <p>You make my heart skip a beat, but you also bring me so much peace. Being cuddled up with you just feels like home.</p>
                     </div>
                 </div>
             </div>

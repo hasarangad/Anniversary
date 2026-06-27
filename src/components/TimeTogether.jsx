@@ -7,7 +7,7 @@ function TimeTogether() {
     const [timeTogether, setTimeTogether] = useState({
         days: '00', hours: '00', minutes: '00', seconds: '00'
     });
-    
+
     const sectionRef = useRef(null);
     const [isVisible, setIsVisible] = useState(false);
 
@@ -39,7 +39,7 @@ function TimeTogether() {
             (entries) => {
                 if (entries[0].isIntersecting) {
                     setIsVisible(true);
-                    
+
                     // Fire Confetti!
                     var duration = 3 * 1000;
                     var end = Date.now() + duration;
@@ -50,21 +50,21 @@ function TimeTogether() {
                             angle: 60,
                             spread: 55,
                             origin: { x: 0 },
-                            colors: ['#ff4b72', '#ff8fa3', '#ffffff']
+                            colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
                         });
                         confetti({
                             particleCount: 5,
                             angle: 120,
                             spread: 55,
                             origin: { x: 1 },
-                            colors: ['#ff4b72', '#ff8fa3', '#ffffff']
+                            colors: ['#ff8fb3', '#ffc2d4', '#ffffff']
                         });
 
                         if (Date.now() < end) {
                             requestAnimationFrame(frame);
                         }
                     }());
-                    
+
                     observer.disconnect();
                 }
             },
@@ -81,15 +81,15 @@ function TimeTogether() {
     const formatTime = (time) => time < 10 ? `0${time}` : time;
 
     return (
-        <section 
-            id="countdown-section" 
+        <section
+            id="countdown-section"
             className="countdown-section"
             ref={sectionRef}
         >
             <div className={`content-wrapper reveal-on-scroll ${isVisible ? 'is-visible' : ''}`}>
                 <h2 className="section-title">Happy 1 Year Anniversary, Boo! ❤️</h2>
                 <p className="anniversary-date">Time We've Been In Love</p>
-                
+
                 <div className="countdown-timer">
                     <div className="time-box">
                         <span>{timeTogether.days}</span>

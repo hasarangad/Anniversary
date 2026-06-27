@@ -11,6 +11,57 @@ import WaitingPage from './components/WaitingPage'
 
 function App() {
   const [appState, setAppState] = useState('locked'); // 'locked', 'main', 'countdown'
+  const [isAutoScrolling, setIsAutoScrolling] = useState(false);
+
+  // When appState changes to 'main', start auto scrolling
+  useEffect(() => {
+    if (appState === 'main') {
+      setIsAutoScrolling(true);
+    }
+  }, [appState]);
+
+  // Auto-scroll logic
+  useEffect(() => {
+    let animationFrameId;
+
+    const scrollStep = () => {
+      if (isAutoScrolling) {
+        window.scrollBy(0, 1); // Scroll down 1 pixel per frame
+        animationFrameId = requestAnimationFrame(scrollStep);
+      }
+    };
+
+    if (isAutoScrolling) {
+      animationFrameId = requestAnimationFrame(scrollStep);
+    }
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+    };
+  }, [isAutoScrolling]);
+
+  // Stop auto-scroll on user interaction
+  useEffect(() => {
+    const stopScrolling = () => {
+      if (isAutoScrolling) {
+        setIsAutoScrolling(false);
+      }
+    };
+
+    if (appState === 'main') {
+      window.addEventListener('wheel', stopScrolling);
+      window.addEventListener('touchstart', stopScrolling);
+      window.addEventListener('mousedown', stopScrolling);
+      window.addEventListener('keydown', stopScrolling);
+
+      return () => {
+        window.removeEventListener('wheel', stopScrolling);
+        window.removeEventListener('touchstart', stopScrolling);
+        window.removeEventListener('mousedown', stopScrolling);
+        window.removeEventListener('keydown', stopScrolling);
+      };
+    }
+  }, [appState, isAutoScrolling]);
 
   useEffect(() => {
     const checkTime = () => {

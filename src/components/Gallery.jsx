@@ -110,12 +110,12 @@ function Gallery() {
             <div className={`reveal-on-scroll ${isVisible ? 'is-visible' : ''}`} style={{ width: '100%', maxWidth: '1200px', margin: '0 auto' }}>
                 <h2 className="section-title">Our Beautiful Memories</h2>
                 <p className="section-subtitle">Every moment with you is a treasure.</p>
-                
+
                 <div className="carousel-container">
                     <div className="carousel-track">
                         {images.map((imgSrc, index) => (
-                            <div 
-                                key={index} 
+                            <div
+                                key={index}
                                 className="carousel-slide"
                                 style={getSlideStyle(index)}
                                 onClick={() => setCurrentIndex(index)}
@@ -124,12 +124,12 @@ function Gallery() {
                             </div>
                         ))}
                     </div>
-                    
+
                     {/* Navigation Dots */}
                     <div className="gallery-dots">
                         {images.map((_, index) => (
-                            <span 
-                                key={index} 
+                            <span
+                                key={index}
                                 className={`dot ${index === currentIndex ? 'active' : ''}`}
                                 onClick={() => setCurrentIndex(index)}
                             ></span>

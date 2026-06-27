@@ -36,7 +36,7 @@ function WaitingPage() {
     const formatTime = (time) => time < 10 ? `0${time}` : time;
 
     return (
-        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%)', position: 'relative' }}>
+        <div className="waiting-page" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', position: 'relative' }}>
             <FloatingHearts />
             
             <div className="glass-panel" style={{ zIndex: 10, textAlign: 'center' }}>
